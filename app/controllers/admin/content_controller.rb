@@ -37,6 +37,18 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
+  def merge
+    @article = Article.find(params[:id])
+    unless current_user.admin?
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, you are not allowed to perform this action")
+      return
+    end
+    @article.merge params[:merge_with]
+    flash[:notice] = _("Articles merged successfully")
+    redirect_to :action => 'edit'
+  end
+
   def destroy
     @record = Article.find(params[:id])
 
@@ -144,6 +156,7 @@ class Admin::ContentController < Admin::BaseController
     id = params[:article][:id] if params[:article] && params[:article][:id]
     @article = Article.get_or_build_article(id)
     @article.text_filter = current_user.text_filter if current_user.simple_editor?
+    @user = current_user
 
     @post_types = PostType.find(:all)
     if request.post?
@@ -240,4 +253,5 @@ class Admin::ContentController < Admin::BaseController
   def setup_resources
     @resources = Resource.by_created_at
   end
+  
 end

@@ -671,4 +671,43 @@ describe Admin::ContentController do
 
     end
   end
+  
+  describe 'merge action' do
+    
+    before :each do
+      Factory(:blog)
+      @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_publisher))
+      @article1 = Factory(:article, :user => @user)
+      @article2 = Factory(:article, :user => @user)
+      request.session = {:user => @user.id}
+      controller.stub!(:current_user).and_return(@user)
+    end
+    
+    it 'should redirect if not admin' do
+      get :merge, :id => Factory(:article, :user => Factory(:user, :login => 'non_admin')).id
+      response.should redirect_to(:action => 'index')
+    end
+    it 'should call merge function' do
+      Article.any_instance.should_receive(:merge)
+      @user.stub!('admin?').and_return true
+      get :merge, :id => @article1.id, :merge_with => @article2.id
+    end
+    it 'should pass another article id to article to be merged' do
+      Article.any_instance.should_receive(:merge).with(@article2.id)
+      @user.stub!('admin?').and_return true
+      get :merge, :id => @article1.id, :merge_with => @article2.id
+    end
+    it 'should render edit page for merged article' do
+      Article.any_instance.stub(:merge)
+      @user.stub!('admin?').and_return true
+      get :merge, :id => @article1.id, :merge_with => @article2.id
+      response.should be_redirect
+    end
+    it 'should make message available to view' do
+      Article.any_instance.stub(:merge)
+      @user.stub!('admin?').and_return true
+      get :merge, :id => @article1.id, :merge_with => @article2.id
+      flash[:notice].should == "Articles merged successfully"
+    end
+  end
 end

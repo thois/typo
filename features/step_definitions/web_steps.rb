@@ -31,6 +31,13 @@ module WithinHelpers
 end
 World(WithinHelpers)
 
+Given /the following (.*)s exist/ do |model, table|
+  model.capitalize!
+  table.hashes.each do |row|
+    eval("#{model}.create row")
+  end
+end
+
 Given /^the blog is set up$/ do
   Blog.default.update_attributes!({:blog_name => 'Teh Blag',
                                    :base_url => 'http://localhost:3000'});
@@ -52,6 +59,29 @@ And /^I am logged into the admin panel$/ do
     page.should have_content('Login successful')
   else
     assert page.has_content?('Login successful')
+  end
+end
+
+And /^I am logged in as "(.*)" with password "(.*)"$/ do |user, password|
+  visit '/accounts/login'
+  fill_in 'user_login', :with => user
+  fill_in 'user_password', :with => password
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
+And /^articles (\d*) and (\d*) were merged/ do |id1, id2|
+  visit "admin/content/edit/#{id1}"
+  fill_in 'merge_with', :with=> id2
+  click_button 'Merge'
+  if page.respond_to? :should
+    page.should have_content('Articles merged succesfully.')
+  else
+    assert page.has_content?('Articles merged succesfully.')
   end
 end
 
