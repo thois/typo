@@ -74,7 +74,7 @@ class Article < Content
   def merge(another_id)
     unless another_id == self.id
     another = Article.find_by_id(another_id)
-    self.body_and_extended += '\n\n'
+    self.body_and_extended += "\n"
     self.body_and_extended += another.body_and_extended
     if self.save
       another.destroy
