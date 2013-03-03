@@ -79,9 +79,9 @@ And /^articles (\d*) and (\d*) were merged/ do |id1, id2|
   fill_in 'merge_with', :with=> id2
   click_button 'Merge'
   if page.respond_to? :should
-    page.should have_content('Articles merged succesfully.')
+    page.should have_content('Articles merged successfully')
   else
-    assert page.has_content?('Articles merged succesfully.')
+    assert page.has_content?('Articles merged successfully')
   end
 end
 

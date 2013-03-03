@@ -703,11 +703,17 @@ describe Admin::ContentController do
       get :merge, :id => @article1.id, :merge_with => @article2.id
       response.should be_redirect
     end
-    it 'should make message available to view' do
-      Article.any_instance.stub(:merge)
+    it 'should make message available to view if succeed' do
+      Article.any_instance.stub(:merge).and_return true
       @user.stub!('admin?').and_return true
       get :merge, :id => @article1.id, :merge_with => @article2.id
       flash[:notice].should == "Articles merged successfully"
+    end
+    it 'should make message available to view if failed' do
+      Article.any_instance.stub(:merge).and_return false
+      @user.stub!('admin?').and_return true
+      get :merge, :id => @article1.id, :merge_with => @article2.id
+      flash[:error].should == "Articles not merged successfully"
     end
   end
 end

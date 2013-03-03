@@ -71,6 +71,19 @@ class Article < Content
     end
   end
 
+  def merge(another_id)
+    unless another_id == self.id
+    another = Article.find_by_id(another_id)
+    self.body_and_extended += '\n\n'
+    self.body_and_extended += another.body_and_extended
+    if self.save
+      another.destroy
+      return true
+    end
+    end
+    false
+  end
+
   def set_permalink
     return if self.state == 'draft'
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?

@@ -34,14 +34,15 @@ Feature: Merge Articles
     And I follow "Foo"
     And I fill in "merge_with" with "4"
     And I press "Merge"
-    Then I should see "Articles merged succesfully." 
+    Then I should see "Articles merged successfully" 
     
   Scenario: Merged article should contain text of both
     Given I am logged into the admin panel
     And articles 3 and 4 were merged
-    When I follow "Foo"
-    Then I should see "Lorem Ipsum "
-    And I should see "Nice Guy"
+    When I follow "All Articles"
+    And I follow "Foo"
+    Then I should see "Lorem Ipsum"
+    And I should see "Nice guy"
  
   Scenario: Merged article should have one author (from either of original)
     Given I am logged into the admin panel
@@ -53,13 +54,14 @@ Feature: Merge Articles
   Scenario: Merged article should have the comments from both the originals
     Given I am logged into the admin panel
     And articles 3 and 4 were merged
-    When I follow "Dashboard"
-    When I follow "Foo"
+    When I follow "Articles"
+    And I follow "Foo"
     Then I should see "Comment 1"
     And I should see "Comment 2"
  
   Scenario: Merged article should have one title (from either of original)
     Given I am logged into the admin panel
     And articles 3 and 4 were merged
+    When I follow "Articles"
     Then I should see "Foo"
     And I should not see "Bar"

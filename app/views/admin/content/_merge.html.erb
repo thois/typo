@@ -1,0 +1,8 @@
+<div class='merge'>
+<h3>Merge Articles</h3>
+<%= form_tag({ :action => "merge", :id => @article.id}, :id => "merge_form") do %>
+Article ID <%= text_field_tag 'merge_with' %>
+<%= submit_tag 'Merge' %>
+
+<% end %>
+</div>
