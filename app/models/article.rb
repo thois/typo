@@ -76,6 +76,11 @@ class Article < Content
     another = Article.find_by_id(another_id)
     self.body_and_extended += "\n"
     self.body_and_extended += another.body_and_extended
+    another.comments.each do |comment|
+      comment.article_id = self.id
+      comment.save!
+    end
+    another.reload
     if self.save
       another.destroy
       return true
